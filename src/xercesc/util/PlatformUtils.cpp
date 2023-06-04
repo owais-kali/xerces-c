@@ -223,27 +223,6 @@ void XMLPlatformUtils::Initialize(const char*          const locale
     endianTest.ch = 1;
     fgXMLChBigEndian = (endianTest.ar[sizeof(XMLCh)-1] == 1);
 
-    // Determine if we can use SSE2 functions
-#if defined(XERCES_HAVE_CPUID_INTRINSIC)
-    int CPUInfo[4]={0};
-    __cpuid(CPUInfo, 1);
-    if(CPUInfo[3] & (1UL << 26))
-        fgSSE2ok = true;
-    else
-        fgSSE2ok = false;
-#elif defined(XERCES_HAVE_GETCPUID)
-    unsigned int eax, ebx, ecx, edx;
-    if(!__get_cpuid (1, &eax, &ebx, &ecx, &edx) || (edx & (1UL << 26))==0)
-        fgSSE2ok = false;
-    else
-        fgSSE2ok = true;
-#elif defined(XERCES_HAVE_SSE2_INTRINSIC)
-    // if we cannot find out at runtime, assume the define has it right
-    fgSSE2ok = true;
-#else
-    fgSSE2ok = false;
-#endif
-
     // Initialize the platform-specific mutex and file mgrs
     fgMutexMgr		= makeMutexMgr(fgMemoryManager);
     fgFileMgr		= makeFileMgr(fgMemoryManager);
